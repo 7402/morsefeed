@@ -20,7 +20,7 @@ There is an option to follow links from one web page, and use the text on the
 linked pages for practice. This is useful for text-only news websites where the
 main page just contains links to articles.
 
-A lengthy series of options can be saved as shortcut by using the -s option and
+A lengthy series of options can be saved as a shortcut by using the -s option and
 recalled by using the -r option.
 
 Runs on Mac or Linux.
