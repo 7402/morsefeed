@@ -102,6 +102,10 @@ Send NPR text-only articles to mbeep, using previously-saved shortcut:
 morsefeed -r npr
 ```
 
+### Notes
+
+See also [Computer Tools for Morse Code Practice](https://7402.org/blog/2018/computer-tools-for-morse-code-practice.html).
+
 ### License
 
 BSD
