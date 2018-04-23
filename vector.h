@@ -39,6 +39,7 @@ struct Vector {
 typedef struct Vector Vector;
 typedef struct Vector StringVector;
 typedef struct Vector StringArray;
+typedef struct Vector CString;
 
 Vector vector_create(size_t capacity, size_t element_size);
 bool vector_push(Vector *vector, const void *element);
@@ -65,6 +66,13 @@ void print_string(const char *p);
 StringArray read_string_array(const char *path);
 void write_string_array(const char *path, const StringArray *array);
 void string_array_free(StringArray *array);
+
+CString cstring_create(size_t capacity);
+const char *cstring_p(CString *cstring);
+bool cstring_append(CString *cstring, const char *str);
+bool cstring_append_char(CString *cstring, const char c);
+void cstring_clear(CString *cstring);
+void cstring_free(CString *cstring);
 
 #if DEBUG
 bool print_if_fail(bool result, const char *message);
