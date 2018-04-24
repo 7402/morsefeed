@@ -32,7 +32,7 @@
 
 void version(void)
 {
-    printf("morsefeed 0.2\n");
+    printf("morsefeed 0.3\n");
 }
 
 void usage(void)
@@ -78,6 +78,7 @@ void usage(void)
            "  -w <wpm>          Morse code speed in PARIS words per minute [default: 20]\n"
            "  --codex-wpm <wpm> Morse code speed in CODEX words per minute [default: 16 2/3]\n"
            "  -x <speed>        Character speed for Farnsworth Morse code timing\n"
+           "  --fcc             Print effective FCC code test speed after sending.\n"
            "\n");
 
 }
@@ -118,7 +119,7 @@ void man_page_source(void)
            "\\fBmorsefeed\\fR ( (\\fB\\-i\\fR \\fIFILE\\fR) | (\\fB\\-u\\fR \\fIURL\\fR [\\fB\\-L\\fR [\\fB\\-A\\fR \\fISTRING\\fR] [\\fB\\-B\\fR \\fISTRING\\fR]]) )\n"
            "    [\\fB\\-a\\fR \\fISTRING\\fR] [\\fB\\-b\\fR \\fISTRING\\fR]\n"
            "    [ ([\\fB\\-o\\fR \\fIFILE\\fR] [\\fB\\-c\\fR \\fIWORDS_PER_ROW\\fR] [\\fB\\-n\\fR \\fIWORD_COUNT\\fR]) | \n"
-           "      (\\fB\\-m\\fR [\\fB\\-p\\fR] [\\fB\\-f\\fR \\fIFREQ\\fR] ([\\fB\\-w\\fR \\fIWPM\\fR] | [\\fB\\--codex-wpm\\fR \\fIWPM\\fR]) [\\fB\\-x\\fR \\fICHAR_SPEED\\fR]) ]\n"
+           "      (\\fB\\-m\\fR [\\fB\\-p\\fR] [\\fB\\-f\\fR \\fIFREQ\\fR] ([\\fB\\-w\\fR \\fIWPM\\fR] | [\\fB\\--codex-wpm\\fR \\fIWPM\\fR]) [\\fB\\-x\\fR \\fICHAR_SPEED\\fR] [\\fB\\-\\-fcc\\fR]) ]\n"
            "    [\\fB\\-s\\fR \\fILABEL\\fR]\n"
            "\\fBmorsefeed\\fR \\fB\\-r\\fR \\fILABEL\\fR\n"
            "\\fBmorsefeed\\fR \\fB\\-h\\fR | \\fB\\-v\\fR | \\fB\\-\\-license\\fR | \\fB\\-\\-man\\-page\\fR\n"
@@ -228,6 +229,10 @@ void man_page_source(void)
            ".TP\n"
            ".BR \\-x \", \" \\-\\-farnsworth \" \" \\fICHAR_SPEED\\fR\n"
            "(Passed to mbeep.) Character speed for Farnsworth Morse code timing. Default is same as words per minute.\n"
+           "\n"
+           ".TP\n"
+           ".BR \\-\\-fcc\n"
+           "Print effective FCC code test speed after sending.\n"
            "\n"
            ".TP\n"
            ".BR \\-h \", \" \\-\\-help\\fR\n"

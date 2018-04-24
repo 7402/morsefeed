@@ -88,7 +88,7 @@ MorseFeedError process_and_send(MorseFeedParams mfp)
         if (mfp.fork_mbeep) {
             if (mfp.words_per_row == DEFAULT) mfp.words_per_row = 1;
             begin_fork_mbeep(&pipe_to_mbeep, &pipe_from_mbeep, &pid, mfp.freq, mfp.paris_wpm, mfp.codex_wpm,
-                             mfp.farnsworth_wpm, use_key_control);
+                             mfp.farnsworth_wpm, mfp.print_fcc_wpm, use_key_control);
 
         } else {
             if (mfp.out_file == NULL) mfp.out_file = stdout;
@@ -298,12 +298,10 @@ MorseFeedError process_and_send(MorseFeedParams mfp)
         }
     }
 
-    if (error == MF_NO_ERROR &&
-        fprintf(pipe_to_mbeep != NULL ? pipe_to_mbeep : mfp.out_file, "\n") < 0) {
+    if ((error == MF_NO_ERROR || error == MF_EXIT) && pipe_to_mbeep == NULL &&
+            fprintf(mfp.out_file, "\n") < 0) {
         error = MF_FILE_WRITE_ERROR;
     }
-
-    if (mfp.fork_mbeep) finish_fork_mbeep();
 
     if (mfp.fork_mbeep) end_fork_mbeep(pipe_to_mbeep, pipe_from_mbeep, pid);
 
@@ -969,7 +967,8 @@ MorseFeedError write_word(char *word, FILE *out_file, FILE *pipe_to_mbeep, FILE 
             }
         }
         
-        (*word_number)++;
+        if (strlen(word ) != 0 && strcmp(word, " ") != 0) (*word_number)++;
+
         if (word_count != DEFAULT && *word_number >= word_count) error = MF_EXIT;
     }
     
@@ -1046,7 +1045,8 @@ void init_fork_mbeep(bool use_key_control)
 }
 
 MorseFeedError begin_fork_mbeep(FILE **pipe_to_mbeep, FILE **pipe_from_mbeep, pid_t *pid,
-                                double freq, double paris_wpm, double codex_wpm, double farnsworth_wpm, bool use_key_control)
+                                double freq, double paris_wpm, double codex_wpm, double farnsworth_wpm,
+                                bool print_fcc_wpm, bool use_key_control)
 {
     MorseFeedError error = MF_NO_ERROR;
     struct termios raw;
@@ -1102,6 +1102,10 @@ MorseFeedError begin_fork_mbeep(FILE **pipe_to_mbeep, FILE **pipe_from_mbeep, pi
         if (farnsworth_wpm != DEFAULT) {
             if (snprintf(part, MAX_PART, " -x %.3f", farnsworth_wpm) >= MAX_PART) error = MF_PROGRAM_ERR;
             if (strlcat(command, part, MAX_COMMAND) >= MAX_COMMAND) error = MF_PROGRAM_ERR;
+        }
+
+        if (print_fcc_wpm) {
+            if (strlcat(command, " --fcc", MAX_COMMAND) >= MAX_COMMAND) error = MF_PROGRAM_ERR;
         }
 
         if (strlcat(command, " -c", MAX_COMMAND) >= MAX_COMMAND) error = MF_PROGRAM_ERR;
@@ -1167,6 +1171,10 @@ MorseFeedError begin_fork_mbeep(FILE **pipe_to_mbeep, FILE **pipe_from_mbeep, pi
                 mbeep_args[arg_count++] = farnsworth_part;
             }
 
+            if (print_fcc_wpm) {
+                mbeep_args[arg_count++] = "--fcc";
+            }
+
             mbeep_args[arg_count++] = "-c";
             mbeep_args[arg_count++] = NULL;
 
@@ -1203,12 +1211,6 @@ MorseFeedError begin_fork_mbeep(FILE **pipe_to_mbeep, FILE **pipe_from_mbeep, pi
     return error;
 }
 
-void finish_fork_mbeep(void)
-{
-    tcsetattr(STDIN_FILENO, TCSANOW, &previous_termios);
-    fcntl(STDIN_FILENO, F_SETFL, flags);
-}
-
 MorseFeedError end_fork_mbeep(FILE *pipe_to_mbeep, FILE *pipe_from_mbeep, pid_t pid)
 {
     MorseFeedError error = MF_NO_ERROR;
@@ -1223,7 +1225,7 @@ MorseFeedError end_fork_mbeep(FILE *pipe_to_mbeep, FILE *pipe_from_mbeep, pid_t 
     if (pipe_from_mbeep != NULL) fclose(pipe_from_mbeep);
 #endif
 
-    if (pid > 0) kill(pid, SIGTERM);
+    if (pid > 0) wait(NULL);    //kill(pid, SIGTERM);
 
     return error;
 }

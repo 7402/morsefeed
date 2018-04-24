@@ -8,7 +8,7 @@ morsefeed \- tool for converting and processing text to be used for Morse code p
 \fBmorsefeed\fR ( (\fB\-i\fR \fIFILE\fR) | (\fB\-u\fR \fIURL\fR [\fB\-L\fR [\fB\-A\fR \fISTRING\fR] [\fB\-B\fR \fISTRING\fR]]) )
     [\fB\-a\fR \fISTRING\fR] [\fB\-b\fR \fISTRING\fR]
     [ ([\fB\-o\fR \fIFILE\fR] [\fB\-c\fR \fIWORDS_PER_ROW\fR] [\fB\-n\fR \fIWORD_COUNT\fR]) | 
-      (\fB\-m\fR [\fB\-p\fR] [\fB\-f\fR \fIFREQ\fR] ([\fB\-w\fR \fIWPM\fR] | [\fB\--codex-wpm\fR \fIWPM\fR]) [\fB\-x\fR \fICHAR_SPEED\fR]) ]
+      (\fB\-m\fR [\fB\-p\fR] [\fB\-f\fR \fIFREQ\fR] ([\fB\-w\fR \fIWPM\fR] | [\fB\--codex-wpm\fR \fIWPM\fR]) [\fB\-x\fR \fICHAR_SPEED\fR] [\fB\-\-fcc\fR]) ]
     [\fB\-s\fR \fILABEL\fR]
 \fBmorsefeed\fR \fB\-r\fR \fILABEL\fR
 \fBmorsefeed\fR \fB\-h\fR | \fB\-v\fR | \fB\-\-license\fR | \fB\-\-man\-page\fR
@@ -97,6 +97,10 @@ Total number of words to print. Default is all.
 .TP
 .BR \-x ", " \-\-farnsworth " " \fICHAR_SPEED\fR
 (Passed to mbeep.) Character speed for Farnsworth Morse code timing. Default is same as words per minute.
+
+.TP
+.BR \-\-fcc
+Print effective FCC code test speed after sending.
 
 .TP
 .BR \-h ", " \-\-help\fR

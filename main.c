@@ -68,6 +68,7 @@ int main(int argc, const char * argv[]) {
     mfp.paris_wpm = DEFAULT;
     mfp.codex_wpm = DEFAULT;
     mfp.farnsworth_wpm = DEFAULT;
+    mfp.print_fcc_wpm = false;
 
     // make path to state file
     if (home != NULL) {
@@ -117,7 +118,10 @@ int main(int argc, const char * argv[]) {
             mfp.farnsworth_wpm = atof(argv[++index]);
             if (mfp.farnsworth_wpm < 5.0 || mfp.farnsworth_wpm > 60.0) error = MF_INVALID_WPM;
             
-            
+        //  --fcc  print FCC wpm
+        } else if (strcmp(argv[index], "--fcc") == 0) {
+            mfp.print_fcc_wpm = true;
+
         //  -i  input file for text to be converted
         } else if (strcmp(argv[index], "-i") == 0 && index + 1 < argc) {
             if (mfp.in_file != NULL) {

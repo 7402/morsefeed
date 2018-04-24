@@ -63,6 +63,7 @@ struct MorseFeedParams {
     double paris_wpm;
     double codex_wpm;
     double farnsworth_wpm;
+    bool print_fcc_wpm;
 };
 typedef struct MorseFeedParams MorseFeedParams;
 
@@ -106,11 +107,10 @@ MorseFeedError write_word(char *word, FILE *out_file, FILE *pipe_to_mbeep, FILE 
                           int words_per_row, int *word_number, int word_count, bool use_key_control);
 
 void init_fork_mbeep(bool use_key_control);
-void finish_fork_mbeep(void);
 
 MorseFeedError begin_fork_mbeep(FILE **pipe_to_mbeep, FILE **pipe_from_mbeep, pid_t *pid,
                                 double freq, double paris_wpm, double codex_wpm, double farnsworth_wpm,
-                                bool use_key_control);
+                                bool print_fcc_wpm, bool use_key_control);
 
 MorseFeedError end_fork_mbeep(FILE *pipe_to_mbeep, FILE *pipe_from_mbeep, pid_t pid);
 
