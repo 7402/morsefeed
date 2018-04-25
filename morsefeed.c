@@ -40,6 +40,7 @@
 #include <termios.h>
 #include <sys/ioctl.h>
 #include <sys/select.h>
+#include <sys/wait.h>
 #include <time.h>
 #include <unistd.h>
 
@@ -988,7 +989,7 @@ void signal_handler(int signum)
         case SIGTERM:   message = " signal_handler(SIGTERM)\n";   break;
         case SIGSEGV:   message = " signal_handler(SIGSEGV)\n";   break;
         case SIGPIPE:   message = " signal_handler(SIGPIPE)\n";   break;
-        case SIGCHLD:   message = " signal_handler(SIGCHLD)\n";   break;
+        case SIGCHLD:   message = "";                             break;
         case SIGTSTP:   message = " signal_handler(SIGTSTP)\n";   break;
     }
     
