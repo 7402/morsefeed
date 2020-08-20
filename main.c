@@ -68,6 +68,7 @@ int main(int argc, const char * argv[]) {
     mfp.paris_wpm = DEFAULT;
     mfp.codex_wpm = DEFAULT;
     mfp.farnsworth_wpm = DEFAULT;
+    mfp.word_space_wpm = DEFAULT;
     mfp.print_fcc_wpm = false;
 
     // make path to state file
@@ -117,7 +118,12 @@ int main(int argc, const char * argv[]) {
                     (strcmp(argv[index], "-x") == 0)) && index + 1 < argc) {
             mfp.farnsworth_wpm = atof(argv[++index]);
             if (mfp.farnsworth_wpm < 5.0 || mfp.farnsworth_wpm > 60.0) error = MF_INVALID_WPM;
-            
+
+        //  --wss  word space speed [for mbeep]
+        } else if ((strcmp(argv[index], "--wss") == 0) && index + 1 < argc) {
+            mfp.word_space_wpm = atof(argv[++index]);
+            if (mfp.word_space_wpm < 5.0 || mfp.word_space_wpm > 60.0) error = MF_INVALID_WPM;
+
         //  --fcc  print FCC wpm
         } else if (strcmp(argv[index], "--fcc") == 0) {
             mfp.print_fcc_wpm = true;

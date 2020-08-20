@@ -89,7 +89,7 @@ MorseFeedError process_and_send(MorseFeedParams mfp)
         if (mfp.fork_mbeep) {
             if (mfp.words_per_row == DEFAULT) mfp.words_per_row = 1;
             begin_fork_mbeep(&pipe_to_mbeep, &pipe_from_mbeep, &pid, mfp.freq, mfp.paris_wpm, mfp.codex_wpm,
-                             mfp.farnsworth_wpm, mfp.print_fcc_wpm, use_key_control);
+                             mfp.farnsworth_wpm, mfp.word_space_wpm, mfp.print_fcc_wpm, use_key_control);
 
         } else {
             if (mfp.out_file == NULL) mfp.out_file = stdout;
@@ -1047,6 +1047,7 @@ void init_fork_mbeep(bool use_key_control)
 
 MorseFeedError begin_fork_mbeep(FILE **pipe_to_mbeep, FILE **pipe_from_mbeep, pid_t *pid,
                                 double freq, double paris_wpm, double codex_wpm, double farnsworth_wpm,
+                                double word_space_wpm,
                                 bool print_fcc_wpm, bool use_key_control)
 {
     MorseFeedError error = MF_NO_ERROR;
@@ -1105,6 +1106,11 @@ MorseFeedError begin_fork_mbeep(FILE **pipe_to_mbeep, FILE **pipe_from_mbeep, pi
             if (strlcat(command, part, MAX_COMMAND) >= MAX_COMMAND) error = MF_PROGRAM_ERR;
         }
 
+        if (word_space_wpm != DEFAULT) {
+            if (snprintf(part, MAX_PART, " --wss %.3f", word_space_wpm) >= MAX_PART) error = MF_PROGRAM_ERR;
+            if (strlcat(command, part, MAX_COMMAND) >= MAX_COMMAND) error = MF_PROGRAM_ERR;
+        }
+
         if (print_fcc_wpm) {
             if (strlcat(command, " --fcc", MAX_COMMAND) >= MAX_COMMAND) error = MF_PROGRAM_ERR;
         }
@@ -1138,6 +1144,7 @@ MorseFeedError begin_fork_mbeep(FILE **pipe_to_mbeep, FILE **pipe_from_mbeep, pi
             char freq_part[MAX_PART];
             char wpm_part[MAX_PART];
             char farnsworth_part[MAX_PART];
+            char word_space_part[MAX_PART];
 
             mbeep_args[arg_count++] = "mbeep";
             mbeep_args[arg_count++] = "-e";
@@ -1170,6 +1177,14 @@ MorseFeedError begin_fork_mbeep(FILE **pipe_to_mbeep, FILE **pipe_from_mbeep, pi
                     error = MF_PROGRAM_ERR;
                 }
                 mbeep_args[arg_count++] = farnsworth_part;
+            }
+
+            if (word_space_wpm != DEFAULT) {
+                mbeep_args[arg_count++] = "--wss";
+                if (snprintf(word_space_part, MAX_PART, "%.3f", word_space_wpm) >= MAX_PART) {
+                    error = MF_PROGRAM_ERR;
+                }
+                mbeep_args[arg_count++] = word_space_part;
             }
 
             if (print_fcc_wpm) {
@@ -1419,7 +1434,8 @@ MorseFeedError read_state(const char *label, MorseFeedParams *mfp, StringVector 
             mfp->paris_wpm = atof(string_vector_at(&next, 14));
             mfp->codex_wpm = atof(string_vector_at(&next, 15));
             mfp->farnsworth_wpm = atof(string_vector_at(&next, 16));
-            
+            mfp->word_space_wpm = atof(string_vector_at(&next, 17));
+
             if (mem_error) error = MF_OUT_OF_MEMORY;
         }
     }
@@ -1476,7 +1492,10 @@ MorseFeedError save_state(const char *label, const MorseFeedParams *mfp)
         
         sprintf(str, "%12.3f", mfp->farnsworth_wpm);
         push_error |= !string_vector_push(&new_entry, str);
-        
+
+        sprintf(str, "%12.3f", mfp->word_space_wpm);
+        push_error |= !string_vector_push(&new_entry, str);
+
         if (push_error) {
             string_vector_free(&new_entry);
             error = MF_OUT_OF_MEMORY;
@@ -1552,6 +1571,7 @@ bool same_state(MorseFeedParams *a, MorseFeedParams *b)
     same = same && a->paris_wpm == b->paris_wpm;
     same = same && a->codex_wpm == b->codex_wpm;
     same = same && a->farnsworth_wpm == b->farnsworth_wpm;
+    same = same && a->word_space_wpm == b->word_space_wpm;
 
     return same;
 }
