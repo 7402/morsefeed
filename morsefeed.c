@@ -89,7 +89,8 @@ MorseFeedError process_and_send(MorseFeedParams mfp)
         if (mfp.fork_mbeep) {
             if (mfp.words_per_row == DEFAULT) mfp.words_per_row = 1;
             begin_fork_mbeep(&pipe_to_mbeep, &pipe_from_mbeep, &pid, mfp.freq, mfp.paris_wpm, mfp.codex_wpm,
-                             mfp.farnsworth_wpm, mfp.word_space_wpm, mfp.print_fcc_wpm, use_key_control);
+                             mfp.farnsworth_wpm, mfp.word_space_wpm, mfp.print_fcc_wpm, mfp.wav_file_name,
+                             use_key_control);
 
         } else {
             if (mfp.out_file == NULL) mfp.out_file = stdout;
@@ -1048,7 +1049,7 @@ void init_fork_mbeep(bool use_key_control)
 MorseFeedError begin_fork_mbeep(FILE **pipe_to_mbeep, FILE **pipe_from_mbeep, pid_t *pid,
                                 double freq, double paris_wpm, double codex_wpm, double farnsworth_wpm,
                                 double word_space_wpm,
-                                bool print_fcc_wpm, bool use_key_control)
+                                bool print_fcc_wpm, const char *wav_file_name, bool use_key_control)
 {
     MorseFeedError error = MF_NO_ERROR;
     struct termios raw;
@@ -1086,6 +1087,11 @@ MorseFeedError begin_fork_mbeep(FILE **pipe_to_mbeep, FILE **pipe_from_mbeep, pi
         char command[MAX_COMMAND];
         char part[MAX_PART];
         strcpy(KEY_COMMAND, "mbeep -e -I");
+
+        if (wav_file_name != NULL) {
+            if (snprintf(part, MAX_PART, " --wav %s", wav_file_name) >= MAX_PART) error = MF_PROGRAM_ERR;
+            if (strlcat(command, part, MAX_COMMAND) >= MAX_COMMAND) error = MF_PROGRAM_ERR;
+        }
 
         if (freq != DEFAULT) {
             if (snprintf(part, MAX_PART, " -f %.3f", freq) >= MAX_PART) error = MF_PROGRAM_ERR;
@@ -1138,9 +1144,10 @@ MorseFeedError begin_fork_mbeep(FILE **pipe_to_mbeep, FILE **pipe_from_mbeep, pi
         *pid = fork();
         if (*pid == 0) {
             // child
-#define MAX_ARGS 11     // mbeep -e -I -f NNN -w NNN -x NNN -c NULL
+#define MAX_ARGS 13     // mbeep -e -I --wav CCC -f NNN -w NNN -x NNN -c NULL
             char *mbeep_args[MAX_ARGS];
             size_t arg_count = 0;
+            char wav_file_name_part[MAX_PART];
             char freq_part[MAX_PART];
             char wpm_part[MAX_PART];
             char farnsworth_part[MAX_PART];
@@ -1149,6 +1156,12 @@ MorseFeedError begin_fork_mbeep(FILE **pipe_to_mbeep, FILE **pipe_from_mbeep, pi
             mbeep_args[arg_count++] = "mbeep";
             mbeep_args[arg_count++] = "-e";
             mbeep_args[arg_count++] = "-I";
+
+            if (wav_file_name != NULL) {
+                mbeep_args[arg_count++] = "--wav";
+                if (snprintf(wav_file_name_part, MAX_PART, "%s", wav_file_name) >= MAX_PART) error = MF_PROGRAM_ERR;
+                mbeep_args[arg_count++] = wav_file_name_part;
+            }
 
             if (freq != DEFAULT) {
                 mbeep_args[arg_count++] = "-f";
@@ -1619,10 +1632,10 @@ void morsefeed_tests(void)
 
     // save_state & read_state
     MorseFeedParams mfp1 = { "foo.txt", NULL, NULL, "https:://example.com", "state.tmp",
-        1, 2, false, true, false, "one", "two", "three", "four", 12.0, 13.0, 14.0, 15.0 };
+        1, 2, false, true, false, "one", "two", "three", "four", 12.0, 13.0, 14.0, 15.0, false, NULL };
 
     MorseFeedParams mfp2 = { "bar.txt", NULL, NULL, "https:://foo.com", "state.tmp",
-        3, 4, true, false, true, "alpha", "bravo", "charlie", "delta", 16.0, 17.0, 18.0, 19.0 };
+        3, 4, true, false, true, "alpha", "bravo", "charlie", "delta", 16.0, 17.0, 18.0, 19.0, false, NULL };
 
     ok &= print_if_fail(save_state("one", &mfp1) == MF_NO_ERROR, "FAIL: save_state (1)");
     ok &= print_if_fail(save_state("two", &mfp2) == MF_NO_ERROR, "FAIL: save_state (2)");

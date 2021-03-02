@@ -2,7 +2,7 @@
 // text.c
 // morsefeed
 //
-// Copyright (C) 2018 Michael Budiansky. All rights reserved.
+// Copyright (C) 2018-2021 Michael Budiansky. All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification, are permitted
 // provided that the following conditions are met:
@@ -32,7 +32,7 @@
 
 void version(void)
 {
-    printf("morsefeed 0.4\n");
+    printf("morsefeed 0.5\n");
 }
 
 void usage(void)
@@ -80,13 +80,14 @@ void usage(void)
            "  -x <speed>        Character speed for Farnsworth Morse code timing\n"
            "  --wss <speed>     Word speed with extra space between words\n"
            "  --fcc             Print effective FCC code test speed after sending.\n"
+           "  --wav             Output file name for .wav file.\n"
            "\n");
 
 }
 
 void license(void)
 {
-    printf("Copyright (C) 2018 Michael Budiansky. All rights reserved.\n"
+    printf("Copyright (C) 2018-2021 Michael Budiansky. All rights reserved.\n"
            "\n"
            "Redistribution and use in source and binary forms, with or without modification, are permitted\n"
            "provided that the following conditions are met:\n"
@@ -120,7 +121,7 @@ void man_page_source(void)
            "\\fBmorsefeed\\fR ( (\\fB\\-i\\fR \\fIFILE\\fR) | (\\fB\\-u\\fR \\fIURL\\fR [\\fB\\-L\\fR [\\fB\\-A\\fR \\fISTRING\\fR] [\\fB\\-B\\fR \\fISTRING\\fR]]) )\n"
            "    [\\fB\\-a\\fR \\fISTRING\\fR] [\\fB\\-b\\fR \\fISTRING\\fR]\n"
            "    [ ([\\fB\\-o\\fR \\fIFILE\\fR] [\\fB\\-c\\fR \\fIWORDS_PER_ROW\\fR] [\\fB\\-n\\fR \\fIWORD_COUNT\\fR]) | \n"
-           "      (\\fB\\-m\\fR [\\fB\\-p\\fR] [\\fB\\-f\\fR \\fIFREQ\\fR] ([\\fB\\-w\\fR \\fIWPM\\fR] | [\\fB\\--codex-wpm\\fR \\fIWPM\\fR]) [\\fB\\-x\\fR \\fICHAR_SPEED\\fR] [\\fB\\-\\-wss\\fR \\fIWORD_SPEED\\fR] [\\fB\\-\\-fcc\\fR]) ]\n"
+           "      (\\fB\\-m\\fR [\\fB\\-p\\fR] [\\fB\\-f\\fR \\fIFREQ\\fR] ([\\fB\\-w\\fR \\fIWPM\\fR] | [\\fB\\--codex-wpm\\fR \\fIWPM\\fR]) [\\fB\\-x\\fR \\fICHAR_SPEED\\fR] [\\fB\\-\\-wss\\fR \\fIWORD_SPEED\\fR] [\\fB\\-\\-fcc\\fR] [\\fB\\-\\-wav\\fR \\fIWAV_FILE_NAME\\fR]) ]\n"
            "    [\\fB\\-s\\fR \\fILABEL\\fR]\n"
            "\\fBmorsefeed\\fR \\fB\\-r\\fR \\fILABEL\\fR\n"
            "\\fBmorsefeed\\fR \\fB\\-h\\fR | \\fB\\-v\\fR | \\fB\\-\\-license\\fR | \\fB\\-\\-man\\-page\\fR\n"
@@ -233,11 +234,15 @@ void man_page_source(void)
            "\n"
            ".TP\n"
            ".BR \\-\\-wss \" \" \\fIWORD_SPEED\\fR\n"
-           "Word speed with extra space between words. Default is same as words per minute.\n"
+           "(Passed to mbeep.) Word speed with extra space between words. Default is same as words per minute.\n"
            "\n"
            ".TP\n"
            ".BR \\-\\-fcc\n"
-           "Print effective FCC code test speed after sending.\n"
+           "(Passed to mbeep.) Print effective FCC code test speed after sending.\n"
+           "\n"
+           ".TP\n"
+           ".BR \\-\\-wav\n"
+           "(Passed to mbeep.) Output file name for .wav file.\n"
            "\n"
            ".TP\n"
            ".BR \\-h \", \" \\-\\-help\\fR\n"

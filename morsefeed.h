@@ -65,6 +65,7 @@ struct MorseFeedParams {
     double farnsworth_wpm;
     double word_space_wpm;
     bool print_fcc_wpm;
+    const char *wav_file_name;
 };
 typedef struct MorseFeedParams MorseFeedParams;
 
@@ -112,7 +113,7 @@ void init_fork_mbeep(bool use_key_control);
 MorseFeedError begin_fork_mbeep(FILE **pipe_to_mbeep, FILE **pipe_from_mbeep, pid_t *pid,
                                 double freq, double paris_wpm, double codex_wpm, double farnsworth_wpm,
                                 double word_space_wpm,
-                                bool print_fcc_wpm, bool use_key_control);
+                                bool print_fcc_wpm, const char *wav_file_name, bool use_key_control);
 
 MorseFeedError end_fork_mbeep(FILE *pipe_to_mbeep, FILE *pipe_from_mbeep, pid_t pid);
 

@@ -70,6 +70,7 @@ int main(int argc, const char * argv[]) {
     mfp.farnsworth_wpm = DEFAULT;
     mfp.word_space_wpm = DEFAULT;
     mfp.print_fcc_wpm = false;
+    mfp.wav_file_name = NULL;
 
     // make path to state file
     if (home != NULL) {
@@ -141,6 +142,10 @@ int main(int argc, const char * argv[]) {
             if (mfp.in_file == NULL) {
                 error = MF_INPUT_FILE_OPEN_ERROR;
             }
+        
+        // --wav  file name for mbeep .wav output    [for mbeep]
+        } else if (strcmp(argv[index], "--wav") == 0 && index + 1 < argc) {
+            mfp.wav_file_name = argv[++index];
         
         //  -u  input URL for text-only news site to be converted
         } else if (strcmp(argv[index], "-u") == 0 && index + 1 < argc) {
