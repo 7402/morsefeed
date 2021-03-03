@@ -2,7 +2,7 @@
 //  morsefeed.c
 //  morsefeed
 //
-// Copyright (C) 2018 Michael Budiansky. All rights reserved.
+// Copyright (C) 2018-2021 Michael Budiansky. All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification, are permitted
 // provided that the following conditions are met:
@@ -1276,7 +1276,7 @@ size_t find_string(const char *string, const char *buffer, size_t buffer_length,
 void extract_urls(const char *base_url, const char *str, size_t start_index, size_t end_index,
                   StringVector *urls, StringVector *titles)
 {
-#define BEGIN_URL "<a href=\""
+#define BEGIN_URL "href=\""
 #define END_URL "\""
 #define BEGIN_TITLE ">"
 #define END_TITLE "</a>"
@@ -1377,7 +1377,7 @@ void extract_urls(const char *base_url, const char *str, size_t start_index, siz
     } while (found_at < end_index);
 }
 
-#define STATE_VECTOR_SIZE 17
+#define STATE_VECTOR_SIZE 20
 
 bool replace_with_copy_or_null(const char **str, StringVector *string_storage);
 bool replace_with_copy_or_null(const char **str, StringVector *string_storage)
@@ -1449,6 +1449,11 @@ MorseFeedError read_state(const char *label, MorseFeedParams *mfp, StringVector 
             mfp->farnsworth_wpm = atof(string_vector_at(&next, 16));
             mfp->word_space_wpm = atof(string_vector_at(&next, 17));
 
+            mfp->print_fcc_wpm = atoi(string_vector_at(&next, 18)) != 0;
+
+            mfp->wav_file_name = string_vector_at(&next, 19);
+            mem_error |= replace_with_copy_or_null(&mfp->wav_file_name, string_storage);
+            
             if (mem_error) error = MF_OUT_OF_MEMORY;
         }
     }
@@ -1508,6 +1513,10 @@ MorseFeedError save_state(const char *label, const MorseFeedParams *mfp)
 
         sprintf(str, "%12.3f", mfp->word_space_wpm);
         push_error |= !string_vector_push(&new_entry, str);
+
+        push_error |= !string_vector_push(&new_entry, mfp->print_fcc_wpm ? "1" : "0");
+
+        push_error |= !string_vector_push(&new_entry, mfp->wav_file_name == NULL ? "" : mfp->wav_file_name);
 
         if (push_error) {
             string_vector_free(&new_entry);
@@ -1585,6 +1594,9 @@ bool same_state(MorseFeedParams *a, MorseFeedParams *b)
     same = same && a->codex_wpm == b->codex_wpm;
     same = same && a->farnsworth_wpm == b->farnsworth_wpm;
     same = same && a->word_space_wpm == b->word_space_wpm;
+
+    same = same && a->print_fcc_wpm == b->print_fcc_wpm;
+    same = same && same_or_nulls(a->wav_file_name, b->wav_file_name);
 
     return same;
 }

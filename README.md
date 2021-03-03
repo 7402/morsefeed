@@ -87,13 +87,13 @@ morsefeed -u https://7402.org/files/sample.txt -a "after this" -b "before this" 
 Send CNN text-only articles to mbeep; stop and resume by hitting space bar; quit by "typing letter 'q'; type 'n' or 'N'
 to skip ahead to next article:
 ```
-morsefeed -u https://lite.cnn.io/en -a "Main Stories</strong>" -b "<hr/>" -L -A "Listen</a></div><hr/>" -B "<hr/>" -m
+morsefeed -u https://lite.cnn.com/en -a "Main Stories</strong>" -b "<hr/>" -L -A "Listen</a></div><hr/>" -B "<hr/>" -m
 ```
 
 Send NPR text-only articles to mbeep, save shortcut for options under label "npr":
 
 ```
-morsefeed -u http://text.npr.org/ -a "Top News Stories" -b "<p>Topics</p>" -L -A "Home</a>" -B "About NPR</a>" -m -s npr
+morsefeed -u https://text.npr.org/ -a "Go To Full Site" -b "Topics" -L -A "Go To Full Site" -B "Topics" -m -s npr
 ```
 
 Send NPR text-only articles to mbeep, using previously-saved shortcut:

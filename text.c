@@ -32,7 +32,7 @@
 
 void version(void)
 {
-    printf("morsefeed 0.5\n");
+    printf("morsefeed 0.5.1\n");
 }
 
 void usage(void)
